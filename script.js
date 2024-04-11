@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('board');
-<<<<<<< Updated upstream
-=======
+
     let currentPlayer = 'black';
     let selectedPiece = null;
     const pieces = [];
->>>>>>> Stashed changes
+
 
     function initializeBoard() {
         for (let row = 0; row < 8; row++) {
@@ -23,8 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 board.appendChild(cell);
             }
         }
-<<<<<<< Updated upstream
-=======
+
 
         initializePieces();
     }
@@ -79,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function findCell(row, col) {
         return board.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
->>>>>>> Stashed changes
+
     }
 
     initializeBoard();
