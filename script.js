@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('board');
+    const pieces = [];
 
     function initializeBoard() {
         for (let row = 0; row < 8; row++) {
@@ -16,6 +17,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 board.appendChild(cell);
             }
         }
+
+        initializePieces();
+    }
+
+    function initializePieces() {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if ((i + j) % 2 === 1) {
+                    if (i < 3) {
+                        createPiece('black', i, j);
+                    } else if (i > 4) {
+                        createPiece('red', i, j);
+                    }
+                }
+            }
+        }
+    }
+
+    function createPiece(color, row, col) {
+        const piece = document.createElement('div');
+        piece.classList.add('piece', color);
+        if (row === 0 || row === 7) {
+            piece.classList.add('king');
+        }
+        pieces.push({ color, row, col, element: piece });
+        const cell = findCell(row, col);
+        cell.appendChild(piece);
+    }
+
+    function findCell(row, col) {
+        return board.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
     }
 
     initializeBoard();
