@@ -28,3 +28,29 @@ body {
 .dark {
     background-color: #b58863;
 }
+
+/* Estilos das peças */
+.piece {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.black {
+    background-color: #000;
+}
+
+.red {
+    background-color: #ff0000;
+}
+
+/* Estilos das peças rei */
+.king {
+    border: 2px solid #ffff00;
+}
+
+/* Estilos da peça selecionada */
+.selected {
+    border: 2px solid #00ff00;
+}
