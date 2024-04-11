@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('board');
+    const pieces = [];
 
     let currentPlayer = 'black';
     let selectedPiece = null;
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cell.appendChild(piece);
     }
 
+
     function cellClickHandler() {
         const row = parseInt(this.dataset.row);
         const col = parseInt(this.dataset.col);
@@ -74,6 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPieceAt(row, col) {
         return pieces.find(p => p.row === row && p.col === col);
     }
+
+    function findCell(row, col) {
+        return board.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+
 
     function findCell(row, col) {
         return board.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
