@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Damas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container" class="container">
+        <div id="board" class="board">
+            <!-- As células do tabuleiro serão geradas dinamicamente aqui -->
+        </div>
+
+        <div id="info" class="info">
+            <h2>Regras do Jogo de Damas</h2>
+	    <p>O jogo de damas é jogado em um tabuleiro quadrado de 8x8. Cada jogador inicia com 12 peças dispostas nas 3 fileiras mais próximas a ele.</p>
+            <p>As pretas começam.</p>
+            <p>As peças movem-se apenas para frente nas diagonais escuras do tabuleiro. As peças comuns movem-se uma casa por vez.</p>
+            <p>Quando uma peça alcança a última fileira do tabuleiro adversário, ela é promovida a "dama", podendo movimentar-se livremente na diagonal para frente e para trás.</p>
+            <p>Para capturar uma peça adversária, o jogador deve saltar sobre ela, movendo-se duas casas na diagonal. O jogador pode realizar múltiplas capturas em um único turno, se disponíveis.</p>
+            <p>O objetivo do jogo é capturar todas as peças do adversário ou bloqueá-las de forma que não possam se mover.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
