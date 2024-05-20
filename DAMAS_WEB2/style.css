@@ -1,0 +1,56 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos do tabuleiro */
+.board {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.light {
+    background-color: #f0d9b5;
+}
+
+.dark {
+    background-color: #b58863;
+}
+
+/* Estilos das peças */
+.piece {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.black {
+    background-color: #000;
+}
+
+.red {
+    background-color: #ff0000;
+}
+
+/* Estilos das peças rei */
+.king {
+    border: 2px solid #ffff00;
+}
+
+/* Estilos da peça selecionada */
+.selected {
+    border: 2px solid #00ff00;
+}
