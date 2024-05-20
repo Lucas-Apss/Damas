@@ -1,8 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const board = document.getElementById('board');
+    const currentPlayerDisplay = document.getElementById('current-player');
+    const blackCapturedDisplay = document.getElementById('black-captured');
+    const redCapturedDisplay = document.getElementById('red-captured');
+
     let currentPlayer = 'black';
     let selectedPiece = null;
     const pieces = [];
+    let blackCaptured = 0;
+    let redCaptured = 0;
 
     function initializeBoard() {
         for (let row = 0; row < 8; row++) {
@@ -68,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (capturedPiece) {
             capturedPiece.element.remove();
             pieces.splice(pieces.indexOf(capturedPiece), 1);
+            updateCapturedCount(capturedPiece.color);
         }
         piece.element.remove();
         piece.row = newRow;
@@ -122,6 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
+    function updateCapturedCount(color) {
+        if (color === 'black') {
+            redCaptured++;
+            redCapturedDisplay.textContent = redCaptured;
+        } else {
+            blackCaptured++;
+            blackCapturedDisplay.textContent = blackCaptured;
+        }
+    }
+
     function getPieceAt(row, col) {
         return pieces.find(p => p.row === row && p.col === col);
     }
@@ -143,129 +160,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Verifica se a peça está se movendo na direção correta ou se está capturando voltando
-        if ((piece.color === 'black' && rowDiff <= 0) || (piece.color === 'red' && rowDiff >= 0)) {
-            if (Math.abs(rowDiff) !== 2 || Math.abs(colDiff) !== 2) return false;
-            const capturedPiece = capturePiece(piece, newRow, newCol);
-            return capturedPiece && capturedPiece.color !== piece.color;
-        }
-
-        // Movimento normal ou de captura
-        if (Math.abs(rowDiff) === 1 && Math.abs(colDiff) === 1) return true;
-        if (Math.abs(rowDiff) === 2 && Math.abs(colDiff) === 2) {
-            const capturedPiece = capturePiece(piece, newRow, newCol);
-            return capturedPiece && capturedPiece.color !== piece.color;
-        }
-
-        return false;
-    }
-
-    function isValidKingMove(piece, newRow, newCol) {
-        const rowDiff = Math.abs(newRow - piece.row);
-        const colDiff = Math.abs(newCol - piece.col);
-
-        if (rowDiff === colDiff) {
-            const rowDirection = (newRow - piece.row) / rowDiff;
-            const colDirection = (newCol - piece.col) / colDiff;
-
-            let hasCapturedPiece = false;
-            for (let i = 1; i < rowDiff; i++) {
-                const intermediateRow = piece.row + i * rowDirection;
-                const intermediateCol = piece.col + i * colDirection;
-
-                const intermediatePiece = getPieceAt(intermediateRow, intermediateCol);
-                if (intermediatePiece) {
-                    if (intermediatePiece.color === piece.color) {
-                        return false;
-                    }
-                    if (hasCapturedPiece) {
-                        return false; // Não pode capturar mais de uma peça por movimento
-                    }
-                    hasCapturedPiece = true;
-                }
+        if ((piece.color === 'black' && newRow > piece.row) || (piece.color === 'red' && newRow < piece.row)) {
+            if (Math.abs(rowDiff) === 1 && Math.abs(colDiff) === 1) {
+                return true;
             }
-            return true;
+            if (Math.abs(rowDiff) === 2 && Math.abs(colDiff) === 2) {
+                const capturedPiece = capturePiece(piece, newRow, newCol);
+                return capturedPiece && capturedPiece.color !== piece.color;
+            }
         }
         return false;
-    }
-
-    function canCapture(piece) {
-        const directions = piece.element.classList.contains('king')
-            ? [[1, 1], [1, -1], [-1, 1], [-1, -1]]
-            : piece.color === 'black'
-                ? [[1, 1], [1, -1]]
-                : [[-1, 1], [-1, -1]];
-
-        return directions.some(([rowDir, colDir]) => {
-            const newRow = piece.row + 2 * rowDir;
-            const newCol = piece.col + 2 * colDir;
-            const capturedPiece = capturePiece(piece, newRow, newCol);
-            return capturedPiece && capturedPiece.color !== piece.color && isEmpty(newRow, newCol);
-        });
-    }
-
-    function canCaptureMore(piece) {
-        const directions = piece.element.classList.contains('king')
-            ? [[1, 1], [1, -1], [-1, 1], [-1, -1]]
-            : piece.color === 'black'
-                ? [[1, 1], [1, -1]]
-                : [[-1, 1], [-1, -1]];
-
-        return directions.some(([rowDir, colDir]) => {
-            const newRow = piece.row + 2 * rowDir;
-            const newCol = piece.col + 2 * colDir;
-            const capturedPiece = capturePiece(piece, newRow, newCol);
-            return capturedPiece && capturedPiece.color !== piece.color && isEmpty(newRow, newCol);
-        });
     }
 
     function isEmpty(row, col) {
         return !getPieceAt(row, col);
     }
 
+    function isValidKingMove(piece, newRow, newCol) {
+        const rowDiff = newRow - piece.row;
+        const colDiff = newCol - piece.col;
+        if (Math.abs(rowDiff) !== Math.abs(colDiff)) return false;
+
+        const rowDirection = rowDiff / Math.abs(rowDiff);
+        const colDirection = colDiff / Math.abs(colDiff);
+        for (let i = 1; i < Math.abs(rowDiff); i++) {
+            if (!isEmpty(piece.row + i * rowDirection, piece.col + i * colDirection)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function endTurn() {
+        currentPlayer = currentPlayer === 'black' ? 'red' : 'black';
+        currentPlayerDisplay.textContent = currentPlayer === 'black' ? 'Preto' : 'Vermelho';
+    }
+
     function highlightPossibleMoves(piece) {
-        removeHighlights();
-        const possibleMoves = generatePossibleMoves(piece);
-        possibleMoves.forEach(([row, col]) => {
-            const cell = findCell(row, col);
-            if (cell) cell.classList.add('highlight');
+        const possibleMoves = getPossibleMoves(piece);
+        possibleMoves.forEach(move => {
+            const cell = findCell(move.row, move.col);
+            cell.classList.add('highlight');
         });
     }
 
-    function generatePossibleMoves(piece) {
-        const directions = piece.element.classList.contains('king')
-            ? [[1, 1], [1, -1], [-1, 1], [-1, -1]]
-            : piece.color === 'black'
-                ? [[1, 1], [1, -1]]
-                : [[-1, 1], [-1, -1]];
+    function getPossibleMoves(piece) {
+        const moves = [];
+        const directions = piece.element.classList.contains('king') ? [[1, 1], [1, -1], [-1, 1], [-1, -1]] : piece.color === 'black' ? [[1, 1], [1, -1]] : [[-1, 1], [-1, -1]];
 
-        const moves = directions.map(([rowDir, colDir]) => [piece.row + rowDir, piece.col + colDir]);
-        const captures = directions.map(([rowDir, colDir]) => [piece.row + 2 * rowDir, piece.col + 2 * colDir]);
-        return [...moves, ...captures];
+        directions.forEach(([rowDiff, colDiff]) => {
+            let row = piece.row + rowDiff;
+            let col = piece.col + colDiff;
+            while (row >= 0 && row < 8 && col >= 0 && col < 8) {
+                if (isValidMove(piece, row, col)) {
+                    moves.push({ row, col });
+                }
+                if (!piece.element.classList.contains('king') || !isEmpty(row, col)) break;
+                row += rowDiff;
+                col += colDiff;
+            }
+        });
+
+        return moves;
     }
 
     function removeHighlights() {
-        document.querySelectorAll('.highlight').forEach(cell => {
+        const highlightedCells = board.querySelectorAll('.highlight');
+        highlightedCells.forEach(cell => {
             cell.classList.remove('highlight');
         });
     }
 
-    function checkForWinner() {
-        const blackPiecesLeft = pieces.filter(p => p.color === 'black').length;
-        const redPiecesLeft = pieces.filter(p => p.color === 'red').length;
-        if (blackPiecesLeft === 0) {
-            alert('Red wins!');
-            return true;
-        } else if (redPiecesLeft === 0) {
-            alert('Black wins!');
-            return true;
-        }
-        return false;
+    function canCapture(piece) {
+        return getPossibleMoves(piece).some(move => Math.abs(move.row - piece.row) > 1);
     }
 
-    function endTurn() {
-        if (!checkForWinner()) {
-            currentPlayer = currentPlayer === 'black' ? 'red' : 'black';
-        }
+    function canCaptureMore(piece) {
+        return getPossibleMoves(piece).some(move => {
+            const capturedPiece = capturePiece(piece, move.row, move.col);
+            return capturedPiece && capturedPiece.color !== piece.color;
+        });
     }
 
     initializeBoard();

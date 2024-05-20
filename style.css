@@ -3,13 +3,22 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Estilos do tabuleiro */
+.container {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
 .board {
     display: grid;
     grid-template-columns: repeat(8, 60px);
     grid-template-rows: repeat(8, 60px);
+    margin-right: 20px;
 }
 
 .cell {
@@ -53,4 +62,19 @@ body {
 /* Estilos da peça selecionada */
 .selected {
     border: 2px solid #00ff00;
+}
+
+/* Estilos da seção de status */
+.status {
+    margin-left: 20px;
+}
+
+.status h3,
+.status p {
+    margin: 5px 0;
+}
+
+.info {
+    margin-top: 20px;
+    max-width: 600px;
 }
