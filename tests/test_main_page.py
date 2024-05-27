@@ -22,3 +22,7 @@ def test_red_pieces_displayed(driver):
 def test_rules_displayed(driver):
     rules_page = MainPage(driver)
     rules_page.is_rules_displayed(), "Verificação falhou: Não foi possível verificar as regras"
+
+def test_piece_move(driver):
+    pieces_move = MainPage(driver)
+    pieces_move.piece_move(3,2,4,3), "Verificação falhou: Não foi possível mover a peça"
